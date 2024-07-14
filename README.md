@@ -1,9 +1,9 @@
 <p align="center">
-MEnc helps to convert media files into different formats in a simplier way with frendly UI showing progress, eta and compression rate. 📺
+menc helps to convert media files into different formats in a simplier way with frendly UI showing progress, eta and compression rate. 📺
 </p>
 
 <h1 align="center">
-menc - Media encoder (ffmpeg wrapper)
+Media Encoder (ffmpeg wrapper)
 </h1>
 
 <img src="./screen.gif" width="600"></img>
