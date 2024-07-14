@@ -23,7 +23,7 @@ program
   .addOption(
     new Option('-f, --format <format>', 'output format')
       .choices(AVAILABLE_FORMATS)
-      .default('mp3')
+      .default('mp4')
       .argParser(parseFormatArg)
   )
   .addHelpText(
