@@ -16,7 +16,7 @@ Media Encoder (ffmpeg wrapper)
 ## Usage
 
 ```
-Usage:  [options] <files...>
+Usage: menc [options] <files...>
 
 Media encoder (ffmpeg wrapper)
 
@@ -32,8 +32,9 @@ Options:
   -v, --version          print enc version
   -d, --dir [value]      output directory
   -c, --custom <value>   use custom ffmpeg options
-  -f, --format <format>  output format (choices: "mp3", "ogg", "sd:480p", "hd:720p",
-                         "fhd:1080p", "qhd:1440p", "2k:1080p", default: "mp3")
+  -f, --format <format>  output format (choices: "mp3", "ogg", "mp4", "sd:480p",
+                         "hd:720p", "fhd:1080p", "qhd:1440p", "2k:1080p", 
+                         default: "mp4")
   -h, --help             display help for command
 
 Hint:
@@ -44,6 +45,7 @@ Hint:
 Formats:
   mp3 (mpeg-1 Audio Layer 3) is a music format that can compress a file by up to 95%.
   ogg is a multimedia container format that's commonly for audio and video files.
+  mp4 a widely used multimedia file storage format for storing video.
   sd or 480p is a video format with 4:3 ratio and 640x480 size.
   hd or 720p is a video format with 16:9 ratio and 1280x720 size.
   fhd or 1080p is a video format with 16:9 ratio and 1920x1080 size.
@@ -54,17 +56,17 @@ Examples:
 
   $ enc <filename>
 
-  Since "--format" argument is default to "mp3", this command
-  will get the audio from your input file and create a new
-  <filename>.mp3 file inside the current directory.
+  Since "--format" argument is default to "mp4", this command
+  will compress your input file and create a new <filename>.mp4
+  file inside the current directory.
 
-  $ enc *
+  $ enc -d 123 *.mov
 
-  It will convert all files from the current directory to mp3.
+  It will compress all mov files from the current directory and
+  put them inside the "123" sub-directory.
 
   $ enc -f hd <filename>
 
   It will convert the <filename> video to hd:720p format and
   create a new <filename_hd>.mp4 file inside the current
-  directory.
-```
+  directory.```

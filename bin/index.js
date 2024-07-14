@@ -9,7 +9,8 @@ import {
 } from '../src/formats.js'
 
 program
-  .version('1.0.0', '-v, --version', 'print enc version')
+  .name('menc')
+  .version('1.0.0', '-v, --version', 'print menc version')
   .description(
     `Media encoder (ffmpeg wrapper)
 
@@ -44,18 +45,18 @@ ${FORMATS_DESC}`
     `
 Examples:
 
-  $ enc <filename>
+  $ menc <filename>
 
   Since "--format" argument is default to "mp4", this command
   will compress your input file and create a new <filename>.mp4
   file inside the current directory.
 
-  $ enc -d 123 *.mov
+  $ menc -d 123 *.mov
 
   It will compress all mov files from the current directory and
-  put them inside the "123" folder.
+  put them inside the "123" sub-directory.
 
-  $ enc -f hd <filename>
+  $ menc -f hd <filename>
 
   It will convert the <filename> video to hd:720p format and
   create a new <filename_hd>.mp4 file inside the current
