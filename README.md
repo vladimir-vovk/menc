@@ -69,4 +69,5 @@ Examples:
 
   It will convert the <filename> video to hd:720p format and
   create a new <filename_hd>.mp4 file inside the current
-  directory.```
+  directory.
+  ```
