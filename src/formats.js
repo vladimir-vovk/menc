@@ -90,7 +90,7 @@ const k8 = {
   args: ['-vf', 'scale=7680:4320']
 }
 
-export const FORMATS = [mp3, ogg, sd, hd, fhd, qhd, k2]
+export const FORMATS = [mp3, ogg, mp4, sd, hd, fhd, qhd, k2]
 
 export const AVAILABLE_FORMATS = FORMATS.map(format => format.name)
 
