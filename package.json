@@ -1,6 +1,6 @@
 {
   "name": "menc",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Media encoder (ffmpeg wrapper)",
   "main": "index.js",
   "bin": {
