@@ -46,13 +46,14 @@ Examples:
 
   $ enc <filename>
 
-  Since "--format" argument is default to "mp3", this command
-  will get the audio from your input file and create a new
-  <filename>.mp3 file inside the current directory.
+  Since "--format" argument is default to "mp4", this command
+  will compress your input file and create a new <filename>.mp4
+  file inside the current directory.
 
-  $ enc *
+  $ enc -d 123 *.mov
 
-  It will convert all files from the current directory to mp3.
+  It will compress all mov files from the current directory and
+  put them inside the "123" folder.
 
   $ enc -f hd <filename>
 
