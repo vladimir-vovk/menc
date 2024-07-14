@@ -1,0 +1,26 @@
+{
+  "name": "menc",
+  "version": "1.0.0",
+  "description": "Media encoder (ffmpeg wrapper)",
+  "main": "index.js",
+  "bin": {
+    "enc": "./bin/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ffmpeg",
+    "media",
+    "encoder"
+  ],
+  "author": "Vladimir Vovk",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "cli-spinners": "^3.1.0",
+    "commander": "^12.1.0",
+    "ini": "^4.1.3"
+  }
+}
