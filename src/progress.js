@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import spinners from 'cli-spinners'
 
 export class ProgressBar {
   constructor({ current, total, onComplete, stream, barSize, prefix } = {}) {
@@ -14,8 +13,8 @@ export class ProgressBar {
     this.status = 'running' // success, fail
 
     this.spinner = {
-      frames: spinners.dots.frames,
-      interval: spinners.dots.interval,
+      frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
+      interval: 80,
       index: 0,
       intervalId: null,
     }

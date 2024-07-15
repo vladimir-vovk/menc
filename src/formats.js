@@ -21,7 +21,7 @@ const ogg = {
 const mp4 = {
   name: 'mp4',
   ext: 'mp4',
-  desc: 'mp4 a widely used multimedia file storage format for storing video.',
+  desc: 'mp4 is a widely used multimedia file storage format for storing video.',
   shortNames: ['mp4'],
   filePostfix: '',
   args: []

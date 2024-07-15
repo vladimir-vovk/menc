@@ -45,7 +45,7 @@ Hint:
 Formats:
   mp3 (mpeg-1 Audio Layer 3) is a music format that can compress a file by up to 95%.
   ogg is a multimedia container format that's commonly for audio and video files.
-  mp4 a widely used multimedia file storage format for storing video.
+  mp4 is a widely used multimedia file storage format for storing video.
   sd or 480p is a video format with 4:3 ratio and 640x480 size.
   hd or 720p is a video format with 16:9 ratio and 1280x720 size.
   fhd or 1080p is a video format with 16:9 ratio and 1920x1080 size.

@@ -1,4 +1,4 @@
-#!/usr/bin/env node --no-warnings=ExperimentalWarning
+#!/usr/bin/env node
 
 import { Option, program } from 'commander'
 import { enc } from '../src/enc.js'
@@ -10,7 +10,7 @@ import {
 
 program
   .name('menc')
-  .version('1.1.3', '-v, --version', 'print menc version')
+  .version('1.1.4', '-v, --version', 'print menc version')
   .description(
     `Media encoder (ffmpeg wrapper)
 
