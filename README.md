@@ -8,6 +8,8 @@ Media Encoder (ffmpeg wrapper)
 
 <img src="./screen.gif" width="600"></img>
 
+[Compress and Convert Your Videos with Command Line](https://dev.to/vladimirvovk/compress-and-convert-your-videos-with-command-line-38a1)
+
 ## Quick Start
 
 1. Install [Node.js](https://nodejs.org/en/download/package-manager) or [Bun.sh](https://bun.sh/docs/installation).
