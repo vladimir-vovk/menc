@@ -1,6 +1,29 @@
 import fs from 'fs'
+import path from 'path'
 import { spawn } from 'child_process'
 import { formatInfo } from './formats.js'
+import { fileURLToPath } from 'url'
+
+export const say = (phrase) => {
+  switch (process.platform) {
+    case 'darwin':
+      spawn('say', [phrase])
+      break
+    case 'linux':
+      spawn('spd-say', [phrase])
+      break
+    case 'win32':
+      spawn('mshta', [`vbscript:Execute("CreateObject(""SAPI.SpVoice"").Speak(""${phrase}"")(window.close)")`])
+      break
+  }
+}
+
+export const playSound = (filename) => {
+  const binPath = fileURLToPath(import.meta.resolve('chalk'))
+  const modulePath = path.join(binPath, '../../../..')
+  const soundFile = path.join(modulePath, `./assets/${filename}`)
+  spawn('ffplay', ['-nodisp', '-autoexit', soundFile], { detached: true })
+}
 
 export const ffmpegArgs = (format) => {
   const info = formatInfo(format)

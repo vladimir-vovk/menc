@@ -7,10 +7,13 @@ import {
   FORMATS_DESC,
   parseFormatArg,
 } from '../src/formats.js'
+import fs from 'fs'
+
+const pjson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 
 program
   .name('menc')
-  .version('1.1.4', '-v, --version', 'print menc version')
+  .version(pjson.version, '-v, --version', 'print menc version')
   .description(
     `Media encoder (ffmpeg wrapper)
 

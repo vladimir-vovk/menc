@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import { parse } from 'ini'
-import { outFilename, outCustomName, isDir, ffmpegInstalled, fileSize, ffmpegArgs } from './utils.js'
+import { outFilename, outCustomName, isDir, ffmpegInstalled, fileSize, ffmpegArgs, playSound, say } from './utils.js'
 import { ProgressBar } from './progress.js'
 
 const parseDuration = (data) => {
@@ -105,5 +105,7 @@ export const enc = async (files, options) => {
     await encode(file, options)
   }
 
+  playSound('success.mp3')
+  say('encoding finished')
   return 0
 }
