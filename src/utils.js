@@ -18,10 +18,19 @@ export const say = (phrase) => {
   }
 }
 
-export const playSound = (filename) => {
+const modulePath = () => {
   const binPath = fileURLToPath(import.meta.resolve('chalk'))
-  const modulePath = path.join(binPath, '../../../..')
-  const soundFile = path.join(modulePath, `./assets/${filename}`)
+  return path.join(binPath, '../../../..')
+}
+
+export const version = () => {
+  const pjson = JSON.parse(fs.readFileSync(path.join(modulePath(), 'package.json'), 'utf8'))
+  return pjson?.version
+
+}
+
+export const playSound = (filename) => {
+  const soundFile = path.join(modulePath(), `./assets/${filename}`)
   spawn('ffplay', ['-nodisp', '-autoexit', soundFile], { detached: true })
 }
 

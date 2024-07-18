@@ -2,6 +2,7 @@
 
 import { Option, program } from 'commander'
 import { enc } from '../src/enc.js'
+import { version } from '../src/utils.js'
 import {
   AVAILABLE_FORMATS,
   FORMATS_DESC,
@@ -9,11 +10,9 @@ import {
 } from '../src/formats.js'
 import fs from 'fs'
 
-const pjson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
-
 program
   .name('menc')
-  .version(pjson.version, '-v, --version', 'print menc version')
+  .version(version(), '-v, --version', 'print menc version')
   .description(
     `Media encoder (ffmpeg wrapper)
 
