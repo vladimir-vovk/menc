@@ -61,7 +61,7 @@ export const encode = async (filename, options) => {
     bar.set(progress / duration * 100)
   })
 
-  await new Promise(resolve => {
+  const result = await new Promise(resolve => {
     process.on('SIGINT', () => {
       error = ' The process is interrupted by the user...'
       ffmpeg.kill('SIGKILL')
@@ -89,6 +89,8 @@ export const encode = async (filename, options) => {
       resolve(code)
     })
   })
+
+  return result
 }
 
 export const enc = async (files, options) => {
@@ -96,16 +98,20 @@ export const enc = async (files, options) => {
     process.exit(1)
   }
 
+  let result
   for (let file of files) {
     // skipping directories
     if (isDir(file)) {
       continue
     }
 
-    await encode(file, options)
+    result = await encode(file, options)
   }
 
-  playSound('success.mp3')
-  say('encoding finished')
-  return 0
+  if (result === 0) {
+    playSound('success.mp3')
+    say('encoding finished')
+  }
+
+  return result
 }
