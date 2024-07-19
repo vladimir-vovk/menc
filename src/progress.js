@@ -81,7 +81,8 @@ export class ProgressBar {
 
   formatEta = () => {
     const eta = this.getEta()
-    if (!eta) {
+
+    if (!eta || !isFinite(eta)) {
       return '-:--:--'
     }
 
