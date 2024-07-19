@@ -18,21 +18,21 @@ export const say = (phrase) => {
   }
 }
 
-const modulePath = () => {
+const mencPath = () => {
   const require = createRequire(import.meta.url)
-  const paths = require.resolve.paths('chalk').map(p => path.join(p, 'chalk'))
-  const chalkPath = paths.find(p => fs.existsSync(p))
-  return path.join(chalkPath, '../..')
+  const paths = require.resolve.paths('menc').filter(p => p.includes('menc/node_modules'))
+  return path.join(paths[0], '..')
 }
 
 export const version = () => {
-  const pjson = JSON.parse(fs.readFileSync(path.join(modulePath(), 'package.json'), 'utf8'))
+  const uri = path.join(mencPath(), 'package.json')
+  const file = fs.readFileSync(uri, 'utf8')
+  const pjson = JSON.parse(file)
   return pjson?.version
-
 }
 
 export const playSound = (filename) => {
-  const soundFile = path.join(modulePath(), `./assets/${filename}`)
+  const soundFile = path.join(mencPath(), `./assets/${filename}`)
   spawn('ffplay', ['-nodisp', '-autoexit', soundFile], { detached: true })
 }
 
