@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import { formatInfo } from './formats.js'
-import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 
 export const say = (phrase) => {
   switch (process.platform) {
@@ -19,8 +19,10 @@ export const say = (phrase) => {
 }
 
 const modulePath = () => {
-  const binPath = fileURLToPath(import.meta.resolve('chalk'))
-  return path.join(binPath, '../../../..')
+  const require = createRequire(import.meta.url)
+  const paths = require.resolve.paths('chalk').map(p => path.join(p, 'chalk'))
+  const chalkPath = paths.find(p => fs.existsSync(p))
+  return path.join(chalkPath, '../..')
 }
 
 export const version = () => {
