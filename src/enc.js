@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
 import { parse } from 'ini'
-import { outFilename, outCustomName, isDir, ffmpegInstalled, fileSize, ffmpegArgs, playSound, say } from './utils.js'
+import { outFilename, outCustomName, shortenFilename, isDir,
+         ffmpegInstalled, fileSize, ffmpegArgs, playSound, say } from './utils.js'
 import { ProgressBar } from './progress.js'
 
 const parseDuration = (data) => {
@@ -27,7 +28,7 @@ const parseError = (data) => {
   }
 }
 
-export const encode = async (filename, options) => {
+export const encode = async ({ filename, options, index, total }) => {
   const output = options.custom ? outCustomName(options.custom) : outFilename(filename, options)
   const args = options.custom ? [options.custom] : ffmpegArgs(options.format)
 
@@ -35,7 +36,10 @@ export const encode = async (filename, options) => {
   let duration = 0 // total duration of input file
   let progress = 0 // current enc progress
 
-  const bar = new ProgressBar({ prefix: `${filename} → ${output}` })
+  const inputName = shortenFilename(filename)
+  const outputName = shortenFilename(output)
+  const fileIndex = total > 1 ? `[${index}/${total}] ` : ''
+  const bar = new ProgressBar({ prefix: `${fileIndex}${inputName} → ${outputName}` })
   bar.start()
 
   const spawnArgs = ['-y', '-progress', 'pipe:1', '-i', filename, ...args]
@@ -99,13 +103,18 @@ export const enc = async (files, options) => {
   }
 
   let result
-  for (let file of files) {
+  let i = 0
+  for (let filename of files) {
+    i++
     // skipping directories
-    if (isDir(file)) {
+    if (isDir(filename)) {
       continue
     }
 
-    result = await encode(file, options)
+    result = await encode({ filename, options, index: i, total: files.length })
+    if (result) {
+      break
+    }
   }
 
   if (result === 0) {

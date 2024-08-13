@@ -20,7 +20,8 @@ export const say = (phrase) => {
 
 const mencPath = () => {
   const require = createRequire(import.meta.url)
-  const paths = require.resolve.paths('menc').filter(p => p.includes('menc/node_modules'))
+  const paths = require.resolve.paths('menc').filter(
+    p => p.includes(path.join('menc', 'node_modules')))
   return path.join(paths[0], '..')
 }
 
@@ -73,6 +74,16 @@ const outDir = (name) => {
   }
 
   return `${dir}/`
+}
+
+export const shortenFilename = (filename) => {
+  const name = filename.split(path.sep).pop()
+  // 1234...5678.901
+  if (name.length <= 11) {
+    return name
+  }
+
+  return `${name.slice(0, 4)}..${name.slice(-8)}`
 }
 
 export const outCustomName = (customArgs) => {
