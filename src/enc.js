@@ -69,7 +69,7 @@ export const encode = async ({ filename, options, index, total }) => {
     process.on('SIGINT', () => {
       error = ' The process is interrupted by the user...'
       ffmpeg.kill('SIGKILL')
-      resolve(1)
+      resolve(130)
     })
 
     ffmpeg.on('error', err => {
@@ -102,17 +102,19 @@ export const enc = async (files, options) => {
     process.exit(1)
   }
 
+  // skipping directories
+  const onlyFiles = files.filter(file => !isDir(file))
+
   let result
   let i = 0
-  for (let filename of files) {
-    i++
-    // skipping directories
-    if (isDir(filename)) {
-      continue
-    }
 
-    result = await encode({ filename, options, index: i, total: files.length })
-    if (result) {
+  for (let filename of onlyFiles) {
+    i++
+
+    result = await encode({ filename, options, index: i, total: onlyFiles.length })
+
+    // SIGINT
+    if (result === 130) {
       break
     }
   }
