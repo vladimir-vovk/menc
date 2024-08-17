@@ -3,6 +3,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { formatInfo } from './formats.js'
 import { createRequire } from 'module'
+import chalk from 'chalk'
 
 export const say = (phrase) => {
   switch (process.platform) {
@@ -40,6 +41,16 @@ export const playSound = (filename) => {
 export const ffmpegArgs = (format) => {
   const info = formatInfo(format)
   return info.args
+}
+
+export const fileExists = (filename) => {
+  const exists = fs.existsSync(filename)
+
+  if (!exists) {
+    console.log(` ${chalk.red('✖')} ${chalk.italic(filename)} not found!`)
+  }
+
+  return exists
 }
 
 export const isDir = (filename) => {

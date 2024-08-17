@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import { parse } from 'ini'
-import { outFilename, outCustomName, shortenFilename, isDir,
+import { outFilename, outCustomName, shortenFilename, isDir, fileExists,
          ffmpegInstalled, fileSize, ffmpegArgs, playSound, say } from './utils.js'
 import { ProgressBar } from './progress.js'
 
@@ -81,7 +81,7 @@ export const encode = async ({ filename, options, index, total }) => {
     ffmpeg.on('close', code => {
       if (error) {
         bar.stop()
-        console.log(` ⚠️ ${error}`)
+        console.log(` 🦆 ${error}`)
         console.log()
       } else {
         const inputSize = fileSize(filename)
@@ -103,7 +103,7 @@ export const enc = async (files, options) => {
   }
 
   // skipping directories
-  const onlyFiles = files.filter(file => !isDir(file))
+  const onlyFiles = files.filter(file => fileExists(file) && !isDir(file))
 
   let result
   let i = 0
