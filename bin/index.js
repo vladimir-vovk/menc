@@ -12,7 +12,7 @@ import fs from 'fs'
 
 program
   .name('menc')
-  .version(version(), '-v, --version', 'print menc version')
+  .version(version(), '-v, --version', 'prints version')
   .description(
     `Media encoder (ffmpeg wrapper)
 
@@ -46,7 +46,6 @@ ${FORMATS_DESC}`
     'after',
     `
 Examples:
-
   $ menc <filename>
 
   Since "--format" argument is default to "mp4", this command
