@@ -1,9 +1,25 @@
 import fs from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
-import { formatInfo } from './formats.js'
 import { createRequire } from 'module'
 import chalk from 'chalk'
+import { CommanderError, InvalidArgumentError } from 'commander'
+
+import { formatInfo } from './formats.js'
+
+export const parseTimeArg = (arg) => {
+  const formattedArg =
+    arg.replaceAll(':', '').length % 2 === 0 ? `00:00:${arg}` : `00:00:0${arg}`
+  const time = formattedArg.slice(-8)
+  const isValid = /^([0-9][0-9]):([0-5][0-9])(:[0-5][0-9])?$/.test(time)
+
+  if (!isValid) {
+    const error = `Allowed formats: <ss>, <mm:ss>, <hh:mm:ss>.`
+    throw new InvalidArgumentError(error)
+  }
+
+  return time
+}
 
 export const say = (phrase) => {
   switch (process.platform) {
@@ -14,15 +30,18 @@ export const say = (phrase) => {
       spawn('spd-say', [phrase])
       break
     case 'win32':
-      spawn('mshta', [`vbscript:Execute("CreateObject(""SAPI.SpVoice"").Speak(""${phrase}"")(window.close)")`])
+      spawn('mshta', [
+        `vbscript:Execute("CreateObject(""SAPI.SpVoice"").Speak(""${phrase}"")(window.close)")`,
+      ])
       break
   }
 }
 
 const mencPath = () => {
   const require = createRequire(import.meta.url)
-  const paths = require.resolve.paths('menc').filter(
-    p => p.includes(path.join('menc', 'node_modules')))
+  const paths = require.resolve
+    .paths('menc')
+    .filter((p) => p.includes(path.join('menc', 'node_modules')))
   return path.join(paths[0], '..')
 }
 
@@ -38,16 +57,60 @@ export const playSound = (filename) => {
   spawn('ffplay', ['-nodisp', '-autoexit', soundFile], { detached: true })
 }
 
-export const ffmpegArgs = (format) => {
-  const info = formatInfo(format)
+export const formatArgs = (options) => {
+  if (options.custom) {
+    return options.custom
+  }
+
+  const info = formatInfo(options.format)
   return info.args
+}
+
+const isTimeGreater = (startTime, endTime) => {
+  const [hh1, mm1, ss1] = startTime.split(':')
+  const time1 = parseInt(ss1) + parseInt(mm1) * 60 + parseInt(hh1) * 60 * 60
+  const [hh2, mm2, ss2] = endTime.split(':')
+  const time2 = parseInt(ss2) + parseInt(mm2) * 60 + parseInt(hh2) * 60 * 60
+
+  return time2 > time1
+}
+
+export const validateArgs = (options) => {
+  const { startTime, endTime } = options
+
+  if (startTime && endTime) {
+    if (!isTimeGreater(startTime, endTime)) {
+      const error = `The end time "${endTime}" must be greater than the start time "${startTime}".`
+      throw new CommanderError(1, 'invalid_trim_time', error)
+    }
+  }
+}
+
+export const trimArgs = (options) => {
+  const { custom, startTime, endTime } = options
+
+  if (custom) {
+    return []
+  }
+
+  const args = []
+
+  if (startTime) {
+    args.push('-ss', startTime)
+  }
+
+  if (endTime) {
+    args.push('-to', endTime)
+  }
+
+  return args
 }
 
 export const fileExists = (filename) => {
   const exists = fs.existsSync(filename)
 
   if (!exists) {
-    console.log(` ${chalk.red('✖')} ${chalk.italic(filename)} not found!`)
+    console.log(` ${chalk.red('✖')} File ${chalk.italic(filename)} not found!`)
   }
 
   return exists
@@ -103,11 +166,16 @@ export const outCustomName = (customArgs) => {
 }
 
 export const outFilename = (filename, options) => {
+  if (options.custom) {
+    return outCustomName(options.custom)
+  }
+
   const dir = outDir(options.dir)
   const info = formatInfo(options.format)
   const { ext, filePostfix: postfix } = info
   const nameParts = filename.split('.')
-  const name = nameParts.length > 1 ? nameParts.slice(0, -1).join('.') : nameParts[0]
+  const name =
+    nameParts.length > 1 ? nameParts.slice(0, -1).join('.') : nameParts[0]
   const outputName = `${dir}${name}${postfix}.${ext}`
 
   // check if input filename equals output filename
@@ -118,9 +186,8 @@ export const outFilename = (filename, options) => {
   return outputName
 }
 
-
 export const pause = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, 100)
   })
 }
@@ -128,12 +195,12 @@ export const pause = () => {
 export const ffmpegInstalled = async () => {
   const ffmpeg = spawn('ffmpeg', ['-version'])
 
-  const isInstalled = await new Promise(resolve => {
-    ffmpeg.on('error', _ => {
+  const isInstalled = await new Promise((resolve) => {
+    ffmpeg.on('error', (_) => {
       resolve(false)
     })
 
-    ffmpeg.on('close', code => {
+    ffmpeg.on('close', (code) => {
       if (code) {
         resolve(false)
       }
@@ -146,7 +213,7 @@ export const ffmpegInstalled = async () => {
     return true
   } else {
     console.log('')
-    console.log('❌ The ffmpeg is not installed.')
+    console.log(`${chalk.red('✖')} The ffmpeg is not installed.`)
     console.log('📦 Please install it first:')
     console.log('https://ffmpeg.org/download.html')
     console.log('')

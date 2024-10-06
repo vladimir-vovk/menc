@@ -1,7 +1,17 @@
 import { spawn } from 'child_process'
 import { parse } from 'ini'
-import { outFilename, outCustomName, shortenFilename, isDir, fileExists,
-         ffmpegInstalled, fileSize, ffmpegArgs, playSound, say } from './utils.js'
+import {
+  outFilename,
+  shortenFilename,
+  isDir,
+  fileExists,
+  ffmpegInstalled,
+  fileSize,
+  trimArgs,
+  formatArgs,
+  playSound,
+  say,
+} from './utils.js'
 import { ProgressBar } from './progress.js'
 
 const parseDuration = (data) => {
@@ -29,8 +39,9 @@ const parseError = (data) => {
 }
 
 export const encode = async ({ filename, options, index, total }) => {
-  const output = options.custom ? outCustomName(options.custom) : outFilename(filename, options)
-  const args = options.custom ? [options.custom] : ffmpegArgs(options.format)
+  const output = outFilename(filename, options)
+  const formatArguments = formatArgs(options)
+  const trimArguments = trimArgs(options)
 
   let error = null
   let duration = 0 // total duration of input file
@@ -39,16 +50,27 @@ export const encode = async ({ filename, options, index, total }) => {
   const inputName = shortenFilename(filename)
   const outputName = shortenFilename(output)
   const fileIndex = total > 1 ? `[${index}/${total}] ` : ''
-  const bar = new ProgressBar({ prefix: `${fileIndex}${inputName} → ${outputName}` })
+  const bar = new ProgressBar({
+    prefix: `${fileIndex}${inputName} → ${outputName}`,
+  })
   bar.start()
 
-  const spawnArgs = ['-y', '-progress', 'pipe:1', '-i', filename, ...args]
+  const spawnArgs = [
+    '-y',
+    '-progress',
+    'pipe:1',
+    ...trimArguments,
+    '-i',
+    filename,
+    ...formatArguments,
+  ]
+
   if (output) {
     spawnArgs.push(output)
   }
   const ffmpeg = spawn('ffmpeg', spawnArgs)
 
-  ffmpeg.stderr.on('data', data => {
+  ffmpeg.stderr.on('data', (data) => {
     if (!duration) {
       duration = parseDuration(data.toString())
     }
@@ -58,27 +80,27 @@ export const encode = async ({ filename, options, index, total }) => {
     }
   })
 
-  ffmpeg.stdout.on('data', data => {
+  ffmpeg.stdout.on('data', (data) => {
     const info = parse(data.toString())
     const microSeconds = Number(info['out_time_ms'])
     progress = Math.round(microSeconds / 1000) // milli-seconds
-    bar.set(progress / duration * 100)
+    bar.set((progress / duration) * 100)
   })
 
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     process.on('SIGINT', () => {
       error = ' The process is interrupted by the user...'
       ffmpeg.kill('SIGKILL')
       resolve(130)
     })
 
-    ffmpeg.on('error', err => {
+    ffmpeg.on('error', (err) => {
       error = err
       ffmpeg.kill('SIGKILL')
       resolve(2)
     })
 
-    ffmpeg.on('close', code => {
+    ffmpeg.on('close', (code) => {
       if (error) {
         bar.stop()
         console.log(` 🦆 ${error}`)
@@ -98,12 +120,12 @@ export const encode = async ({ filename, options, index, total }) => {
 }
 
 export const enc = async (files, options) => {
-  if (!await ffmpegInstalled()) {
+  if (!(await ffmpegInstalled())) {
     process.exit(1)
   }
 
   // skipping directories
-  const onlyFiles = files.filter(file => fileExists(file) && !isDir(file))
+  const onlyFiles = files.filter((file) => fileExists(file) && !isDir(file))
 
   let result
   let i = 0
@@ -111,7 +133,12 @@ export const enc = async (files, options) => {
   for (let filename of onlyFiles) {
     i++
 
-    result = await encode({ filename, options, index: i, total: onlyFiles.length })
+    result = await encode({
+      filename,
+      options,
+      index: i,
+      total: onlyFiles.length,
+    })
 
     // SIGINT
     if (result === 130) {

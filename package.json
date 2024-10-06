@@ -1,6 +1,6 @@
 {
   "name": "menc",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Media encoder (ffmpeg wrapper)",
   "main": "./bin/index.js",
   "bin": {
@@ -20,6 +20,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vladimir-vovk/menc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vladimir-vovk/menc/issues"
   },
   "license": "ISC",
   "dependencies": {

@@ -28,16 +28,17 @@ Media encoder (ffmpeg wrapper)
 
 
 Arguments:
-  files                  one or more files to encode
+  files                        one or more files to encode
 
 Options:
-  -v, --version          print enc version
-  -d, --dir [value]      output directory
-  -c, --custom <value>   use custom ffmpeg options
-  -f, --format <format>  output format (choices: "mp3", "ogg", "mp4", "sd:480p",
-                         "hd:720p", "fhd:1080p", "qhd:1440p", "2k:1080p", 
-                         default: "mp4")
-  -h, --help             display help for command
+  -v, --version                prints version
+  -d, --dir <name>             output directory
+  -s, --start-time <hh:mm:ss>  trim start time
+  -e, --end-time <hh:mm:ss>    trim end time
+  -c, --custom <value>         use custom ffmpeg options
+  -f, --format <format>        output format (choices: "mp3", "ogg", "mp4", "sd:480p", "hd:720p", "fhd:1080p", "qhd:1440p", "2k:1080p",
+                               default: "mp4")
+  -h, --help                   display help for command
 
 Hint:
   You can also use short names for the "--format" argument.
@@ -55,21 +56,35 @@ Formats:
   2k video or 1080p is a video format with 1:1.77 ratio and 2048x1080 size.
 
 Examples:
-
-  $ enc <filename>
+  $ npx menc <filename>
 
   Since "--format" argument is default to "mp4", this command
   will compress your input file and create a new <filename>.mp4
   file inside the current directory.
 
-  $ enc -d 123 *.mov
+  $ npx menc -d 123 *.mov
 
   It will compress all mov files from the current directory and
   put them inside the "123" sub-directory.
 
-  $ enc -f hd <filename>
+  $ npx menc -f hd <filename>
 
   It will convert the <filename> video to hd:720p format and
   create a new <filename_hd>.mp4 file inside the current
   directory.
+
+  $ npx menc -s 10 <filename>
+
+  Compress the input file into a new <filename>.mp4 starting
+  from the 10'th second.
+
+  $ npx menc -e 1:05 <filename>
+
+  Compress the input file into a new <filename>.mp4 starting
+  from the begining until 1:05.
+
+  $ npx menc -s 25:03 -e 1:09:04 -f 2k <filename>
+
+  Compress the input file into a new <filename_2k>.mp4
+  2k resolution video starting from 25:03 until 1:09:04.
   ```
