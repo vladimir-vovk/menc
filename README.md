@@ -35,6 +35,7 @@ Options:
   -d, --dir <name>             output directory
   -s, --start-time <hh:mm:ss>  trim start time
   -e, --end-time <hh:mm:ss>    trim end time
+  --copy                       copy the input stream (the output will not to be re-encoded)
   -c, --custom <value>         use custom ffmpeg options
   -f, --format <format>        output format (choices: "mp3", "ogg", "mp4", "sd:480p", "hd:720p", "fhd:1080p", "qhd:1440p", "2k:1080p",
                                default: "mp4")
@@ -73,18 +74,13 @@ Examples:
   create a new <filename_hd>.mp4 file inside the current
   directory.
 
-  $ npx menc -s 10 <filename>
+  $ npx menc -s 10 -e 1:09:04 <filename>
 
   Compress the input file into a new <filename>.mp4 starting
-  from the 10'th second.
+  from the 10'th second until 1:09:04.
 
-  $ npx menc -e 1:05 <filename>
+  $ npx menc -e 1:05 --copy <filename>
 
-  Compress the input file into a new <filename>.mp4 starting
-  from the begining until 1:05.
-
-  $ npx menc -s 25:03 -e 1:09:04 -f 2k <filename>
-
-  Compress the input file into a new <filename_2k>.mp4
-  2k resolution video starting from 25:03 until 1:09:04.
+  Trim the input file (no re-encoding) into a new file
+  starting from the begining until 1:05
   ```

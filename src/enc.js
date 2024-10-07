@@ -7,8 +7,8 @@ import {
   fileExists,
   ffmpegInstalled,
   fileSize,
-  trimArgs,
-  formatArgs,
+  getInputArgs,
+  getOutputArgs,
   playSound,
   say,
 } from './utils.js'
@@ -40,8 +40,8 @@ const parseError = (data) => {
 
 export const encode = async ({ filename, options, index, total }) => {
   const output = outFilename(filename, options)
-  const formatArguments = formatArgs(options)
-  const trimArguments = trimArgs(options)
+  const inputArgs = getInputArgs(options)
+  const outputArgs = getOutputArgs(options)
 
   let error = null
   let duration = 0 // total duration of input file
@@ -59,10 +59,10 @@ export const encode = async ({ filename, options, index, total }) => {
     '-y',
     '-progress',
     'pipe:1',
-    ...trimArguments,
+    ...inputArgs,
     '-i',
     filename,
-    ...formatArguments,
+    ...outputArgs,
   ]
 
   if (output) {

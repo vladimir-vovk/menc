@@ -21,6 +21,26 @@ export const parseTimeArg = (arg) => {
   return time
 }
 
+const isTimeGreater = (startTime, endTime) => {
+  const [hh1, mm1, ss1] = startTime.split(':')
+  const time1 = parseInt(ss1) + parseInt(mm1) * 60 + parseInt(hh1) * 60 * 60
+  const [hh2, mm2, ss2] = endTime.split(':')
+  const time2 = parseInt(ss2) + parseInt(mm2) * 60 + parseInt(hh2) * 60 * 60
+
+  return time2 > time1
+}
+
+export const validateArgs = (options) => {
+  const { startTime, endTime } = options
+
+  if (startTime && endTime) {
+    if (!isTimeGreater(startTime, endTime)) {
+      const error = `The end time "${endTime}" must be greater than the start time "${startTime}".`
+      throw new CommanderError(1, 'invalid_trim_time', error)
+    }
+  }
+}
+
 export const say = (phrase) => {
   switch (process.platform) {
     case 'darwin':
@@ -57,36 +77,22 @@ export const playSound = (filename) => {
   spawn('ffplay', ['-nodisp', '-autoexit', soundFile], { detached: true })
 }
 
-export const formatArgs = (options) => {
+export const getOutputArgs = (options) => {
   if (options.custom) {
     return options.custom
   }
 
   const info = formatInfo(options.format)
-  return info.args
-}
+  const args = [...info.args]
 
-const isTimeGreater = (startTime, endTime) => {
-  const [hh1, mm1, ss1] = startTime.split(':')
-  const time1 = parseInt(ss1) + parseInt(mm1) * 60 + parseInt(hh1) * 60 * 60
-  const [hh2, mm2, ss2] = endTime.split(':')
-  const time2 = parseInt(ss2) + parseInt(mm2) * 60 + parseInt(hh2) * 60 * 60
-
-  return time2 > time1
-}
-
-export const validateArgs = (options) => {
-  const { startTime, endTime } = options
-
-  if (startTime && endTime) {
-    if (!isTimeGreater(startTime, endTime)) {
-      const error = `The end time "${endTime}" must be greater than the start time "${startTime}".`
-      throw new CommanderError(1, 'invalid_trim_time', error)
-    }
+  if (options.copy) {
+    args.push('-c', 'copy')
   }
+
+  return args
 }
 
-export const trimArgs = (options) => {
+export const getInputArgs = (options) => {
   const { custom, startTime, endTime } = options
 
   if (custom) {
@@ -171,9 +177,15 @@ export const outFilename = (filename, options) => {
   }
 
   const dir = outDir(options.dir)
-  const info = formatInfo(options.format)
-  const { ext, filePostfix: postfix } = info
   const nameParts = filename.split('.')
+  const inputExt = nameParts.slice(-1)
+
+  const info = formatInfo(options.format)
+  // If the "copy" arg is specified use the same file extension
+  const { ext, filePostfix: postfix } = options.copy
+    ? { ext: inputExt, filePostfix: '' }
+    : info
+
   const name =
     nameParts.length > 1 ? nameParts.slice(0, -1).join('.') : nameParts[0]
   const outputName = `${dir}${name}${postfix}.${ext}`
