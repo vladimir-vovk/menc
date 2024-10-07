@@ -76,11 +76,11 @@ Examples:
 
   $ npx menc -s 10 -e 1:09:04 <filename>
 
-  Compress the input file into a new <filename>.mp4 starting
-  from the 10th second until 1:09:04.
+  Compress the input file into a new <filename>.mp4 from
+  the 10th second until 1:09:04.
 
   $ npx menc -e 1:05 --copy <filename>
 
   Trim the input file (no re-encoding) into a new file
-  starting from the begining until 1:05
+  from the beginning until 1:05
   ```
