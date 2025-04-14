@@ -81,6 +81,12 @@ Examples:
 
   $ npx menc -e 1:05 --copy <filename>
 
-  Trim the input file (no re-encoding) into a new file
-  from the beginning until 1:05
+  Trim the input file (no re-encoding) into a new file from
+  the beginning until 1:05.
+
+  $ npx menc --custom '-vf scale=320:-2' <filename>
+
+  Scale the output video making width equal to 320, keeping
+  the aspect ratio ("-2" ensures that the aspect ratio always
+  conforms to the codec requirements).
   ```

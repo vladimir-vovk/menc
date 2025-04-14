@@ -79,7 +79,7 @@ export const playSound = (filename) => {
 
 export const getOutputArgs = (options) => {
   if (options.custom) {
-    return options.custom
+    return options.custom.split(' ')
   }
 
   const info = formatInfo(options.format)
@@ -172,10 +172,6 @@ export const outCustomName = (customArgs) => {
 }
 
 export const outFilename = (filename, options) => {
-  if (options.custom) {
-    return outCustomName(options.custom)
-  }
-
   const dir = outDir(options.dir)
   const nameParts = filename.split('.')
   const inputExt = nameParts.slice(-1)

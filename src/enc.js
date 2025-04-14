@@ -68,6 +68,7 @@ export const encode = async ({ filename, options, index, total }) => {
   if (output) {
     spawnArgs.push(output)
   }
+
   const ffmpeg = spawn('ffmpeg', spawnArgs)
 
   ffmpeg.stderr.on('data', (data) => {
