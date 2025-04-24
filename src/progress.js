@@ -13,28 +13,33 @@ export class ProgressBar {
     this.status = 'running' // success, fail
 
     this.spinner = {
-      frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
+      frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
       interval: 80,
       index: 0,
       intervalId: null,
     }
   }
 
-  percent = () => Math.floor(this.current / this.total * 100)
+  percent = () => Math.floor((this.current / this.total) * 100)
 
   bar = () => {
-    const _progress = Math.floor(this.current / this.total * this.barSize)
+    const _progress = Math.floor((this.current / this.total) * this.barSize)
     const progress = isNaN(_progress) || _progress < 0 ? 0 : _progress
     const isDone = progress === this.barSize
     const leftColor = isDone ? chalk.green : chalk.green
     const rightColor = chalk.gray
 
-    const left = Array(progress).fill(leftColor('━'))
+    const left =
+      progress > 0 || progress <= this.barSize
+        ? Array(progress).fill(leftColor('━'))
+        : []
 
     if (progress > 0 && progress < this.barSize) {
       left[left.length - 1] = leftColor('╸')
     }
-    const right = isDone ? [] : Array(this.barSize - progress).fill(rightColor('━'))
+    const right = isDone
+      ? []
+      : Array(this.barSize - progress).fill(rightColor('━'))
 
     const bar = `${left.join('')}${right.join('')}`
     const percent = chalk.yellow(`${String(this.percent()).padStart(3, ' ')}%`)
@@ -72,7 +77,8 @@ export class ProgressBar {
     const last = this.etaData[length - 1]
     const prev = this.etaData[0]
     // velocity of changing value per second
-    const velocity = (last.value - prev.value) / ((last.time - prev.time) / 1000)
+    const velocity =
+      (last.value - prev.value) / ((last.time - prev.time) / 1000)
     const left = this.total - last.value
     const eta = (left / velocity).toFixed(2) // seconds
 
