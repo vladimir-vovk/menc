@@ -13,7 +13,7 @@ import {
 
 program
   .name('menc')
-  .version(version(), '-v, --version', 'prints version')
+  .version(version(), '-v, --version', 'print version')
   .description(
     `Media encoder (ffmpeg wrapper)
 
