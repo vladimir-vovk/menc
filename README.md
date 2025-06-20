@@ -12,7 +12,7 @@ Media Encoder (ffmpeg wrapper)
 
 ## Quick Start
 
-1. Inftall [ffmpeg](https://ffmpeg.org/download.html).
+1. Install [ffmpeg](https://ffmpeg.org/download.html).
 2. Install [Node.js](https://nodejs.org/en/download/package-manager) or [Bun.sh](https://bun.sh/docs/installation).
 3. Run `npx menc` or `bunx menc`.
 
