@@ -1,5 +1,5 @@
 <p align="center">
-menc helps to convert media files into different formats in a simplier way with frendly UI showing progress, eta and compression rate. 📺
+Menc (media encoder) helps to convert media files into different formats in a simpler way with a friendly UI showing progress, eta, and compression rate. 📺
 </p>
 
 <h1 align="center">
@@ -12,8 +12,9 @@ Media Encoder (ffmpeg wrapper)
 
 ## Quick Start
 
-1. Install [Node.js](https://nodejs.org/en/download/package-manager) or [Bun.sh](https://bun.sh/docs/installation).
-2. Run `npx menc` or `bunx menc`.
+1. Install [ffmpeg](https://ffmpeg.org/download.html).
+2. Install [Node.js](https://nodejs.org/en/download/package-manager) or [Bun.sh](https://bun.sh/docs/installation).
+3. Run `npx menc` or `bunx menc`.
 
 ## Usage
 
@@ -23,8 +24,8 @@ Usage: menc [options] <files...>
 Media encoder (ffmpeg wrapper)
 
   It helps to convert media files into different
-  formats in a simplier way with frendly UI showing
-  progress, eta and compression rate.
+  formats in a simpler way with friendly UI showing
+  progress, eta, and compression rate.
 
 
 Arguments:
@@ -43,12 +44,12 @@ Options:
 
 Hint:
   You can also use short names for the "--format" argument.
-  For example, instead of "--format sd:480p" you can type
+  For example, instead of "--format sd:480p", you can type
   "--format sd" or "--format 480p".
 
 Formats:
-  mp3 (mpeg-1 Audio Layer 3) is a music format that can compress a file by up to 95%.
-  ogg is a multimedia container format that's commonly for audio and video files.
+  mp3 (mpeg-1 Audio Layer 3) is a music format that can compress files by up to 95%.
+  ogg is a multimedia container format that's commonly used for audio and video files.
   mp4 is a widely used multimedia file storage format for storing video.
   sd or 480p is a video format with 4:3 ratio and 640x480 size.
   hd or 720p is a video format with 16:9 ratio and 1280x720 size.
@@ -65,12 +66,12 @@ Examples:
 
   $ npx menc -d 123 *.mov
 
-  It will compress all mov files from the current directory and
+  It will compress all MOV files from the current directory and
   put them inside the "123" sub-directory.
 
   $ npx menc -f hd <filename>
 
-  It will convert the <filename> video to hd:720p format and
+  It will convert the <filename> video to HD:720p format and
   create a new <filename_hd>.mp4 file inside the current
   directory.
 
@@ -86,7 +87,11 @@ Examples:
 
   $ npx menc --custom '-vf scale=320:-2' <filename>
 
-  Scale the output video making width equal to 320, keeping
+  Scale the output video, making the width equal to 320, keeping
   the aspect ratio ("-2" ensures that the aspect ratio always
   conforms to the codec requirements).
+
+  $ npx menc -c '-b:a 64k' -f mp3 <filename>
+
+  Set bitrate for output MP3 file to 64k (smaller size).
   ```
