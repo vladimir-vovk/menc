@@ -1,5 +1,5 @@
 <p align="center">
-Menc (media encoder) helps to convert media files into different formats in a simpler way with a friendly UI showing progress, eta, and compression rate. 📺
+Menc (media encoder) helps convert media files into different formats in a simpler way, with a friendly UI that shows progress, ETA, and compression rate. 📺
 </p>
 
 <h1 align="center">
@@ -32,7 +32,8 @@ Arguments:
   files                        one or more files to encode
 
 Options:
-  -v, --version                prints version
+  -v, --version                print version
+  -i, --info                   print media information
   -d, --dir <name>             output directory
   -s, --start-time <hh:mm:ss>  trim start time
   -e, --end-time <hh:mm:ss>    trim end time
@@ -49,7 +50,7 @@ Hint:
 
 Formats:
   mp3 (mpeg-1 Audio Layer 3) is a music format that can compress files by up to 95%.
-  ogg is a multimedia container format that's commonly used for audio and video files.
+  ogg is a multimedia container format commonly used for audio and video files.
   mp4 is a widely used multimedia file storage format for storing video.
   sd or 480p is a video format with 4:3 ratio and 640x480 size.
   hd or 720p is a video format with 16:9 ratio and 1280x720 size.
