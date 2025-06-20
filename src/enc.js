@@ -6,11 +6,13 @@ import {
   isDir,
   fileExists,
   ffmpegInstalled,
+  ffprobeInstalled,
   fileSize,
   getInputArgs,
   getOutputArgs,
   playSound,
   say,
+  logMediaInfo,
 } from './utils.js'
 import { ProgressBar } from './progress.js'
 
@@ -36,6 +38,59 @@ const parseError = (data) => {
   if (lastLine?.startsWith('Error')) {
     return lastLine
   }
+}
+
+const printMediaInfo = async (filename) => {
+  let error = null
+  let data = ''
+
+  const spawnArgs = [
+    '-v',
+    'quiet',
+    '-print_format',
+    'json',
+    '-show_format',
+    '-show_streams',
+    '-print_format',
+    'json',
+    filename,
+  ]
+
+  const ffprobe = spawn('ffprobe', spawnArgs)
+
+  ffprobe.stdout.on('data', (chunk) => {
+    const dataChunk = chunk.toString()
+    data += dataChunk
+  })
+
+  const result = await new Promise((resolve) => {
+    process.on('SIGINT', () => {
+      error = ' The process is interrupted by the user...'
+      ffprobe.kill('SIGKILL')
+      resolve(130)
+    })
+
+    ffprobe.on('error', (err) => {
+      console.log('error', err)
+      error = err
+      ffprobe.kill('SIGKILL')
+      resolve(2)
+    })
+
+    ffprobe.on('close', (code) => {
+      if (error) {
+        console.log(` 🦆 ${error}`)
+        console.log()
+      }
+
+      const info = JSON.parse(data)
+      logMediaInfo(info)
+
+      resolve(code)
+    })
+  })
+
+  return result
 }
 
 export const encode = async ({ filename, options, index, total }) => {
@@ -125,6 +180,10 @@ export const enc = async (files, options) => {
     process.exit(1)
   }
 
+  if (options.info && !(await ffprobeInstalled())) {
+    process.exit(1)
+  }
+
   // skipping directories
   const onlyFiles = files.filter((file) => fileExists(file) && !isDir(file))
 
@@ -134,12 +193,16 @@ export const enc = async (files, options) => {
   for (let filename of onlyFiles) {
     i++
 
-    result = await encode({
-      filename,
-      options,
-      index: i,
-      total: onlyFiles.length,
-    })
+    if (options.info) {
+      result = printMediaInfo(filename)
+    } else {
+      result = await encode({
+        filename,
+        options,
+        index: i,
+        total: onlyFiles.length,
+      })
+    }
 
     // SIGINT
     if (result === 130) {
@@ -147,7 +210,7 @@ export const enc = async (files, options) => {
     }
   }
 
-  if (result === 0) {
+  if (result === 0 && !options.info) {
     playSound('success.mp3')
     say('encoding finished')
   }

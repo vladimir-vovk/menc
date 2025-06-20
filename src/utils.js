@@ -200,6 +200,35 @@ export const pause = () => {
   })
 }
 
+export const ffprobeInstalled = async () => {
+  const ffprobe = spawn('ffprobe', ['-version'])
+
+  const isInstalled = await new Promise((resolve) => {
+    ffprobe.on('error', (_) => {
+      resolve(false)
+    })
+
+    ffprobe.on('close', (code) => {
+      if (code) {
+        resolve(false)
+      }
+
+      resolve(true)
+    })
+  })
+
+  if (isInstalled) {
+    return true
+  } else {
+    console.log('')
+    console.log(`${chalk.red('✖')} The ffprobe is not installed.`)
+    console.log('📦 Please install it first:')
+    console.log('https://ffmpeg.org/download.html')
+    console.log('')
+    return false
+  }
+}
+
 export const ffmpegInstalled = async () => {
   const ffmpeg = spawn('ffmpeg', ['-version'])
 
@@ -237,4 +266,62 @@ export const fileSize = (filename) => {
 export const random = (array) => {
   const i = Math.floor(array.length * Math.random())
   return array[i]
+}
+
+export const formatDuration = (inputDuration) => {
+  const duration = Number(inputDuration)
+
+  const hours = Math.floor(duration / 60 / 60)
+  const minutes = Math.floor((duration - hours * 60 * 60) / 60)
+  const seconds = Math.floor(duration - hours * 60 * 60 - minutes * 60)
+
+  const strHours = hours ? `${hours}` : ''
+  const strMinutes = hours | minutes ? String(minutes).padStart(2, '0') : ''
+  const strSeconds = String(seconds).padStart(2, '0')
+
+  return `${strHours}:${strMinutes}:${strSeconds}`
+}
+
+export const formatFileSize = (inputSize) => {
+  const size = Number(inputSize)
+  const mb = (size / 1024 / 1024).toFixed(2)
+
+  return `${mb}Mb`
+}
+
+export const logMediaInfo = (info) => {
+  const filename = info?.format?.filename
+  const duration = info?.format?.duration
+  const size = info?.format?.size
+  const strDuration = duration ? `${formatDuration(duration)}` : ''
+  const strSize = size ? `, ${formatFileSize(size)}` : ''
+  console.log(
+    chalk.bold(` ${filename}`),
+    chalk.gray(`-> ${strDuration}${strSize}`),
+  )
+
+  for (let stream of info?.streams) {
+    const codecType = stream?.['codec_type']
+    const codecName = stream?.['codec_name']
+    console.log(` - ${codecType} codec: ${codecName}`)
+
+    if (codecType === 'video') {
+      const width = stream?.width
+      const height = stream?.height
+      const displayAspectRatio = stream?.['display_aspect_ratio']
+      const frameRate = stream?.['avg_frame_rate']
+      console.log(
+        `   ${width}x${height}, ${displayAspectRatio}, frame rate: ${frameRate}`,
+      )
+    }
+
+    if (codecType === 'audio') {
+      const channels = stream?.channels
+      const channelLayout = stream?.['channel_layout']
+      const bitRate = stream?.['bit_rate']
+      console.log(
+        `   channels: ${channels}, layout: ${channelLayout}, bit rate: ${bitRate}`,
+      )
+    }
+  }
 }

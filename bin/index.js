@@ -18,10 +18,11 @@ program
     `Media encoder (ffmpeg wrapper)
 
   It helps to convert media files into different
-  formats in a simplier way with frendly UI showing
-  progress, eta and compression rate.
+  formats in a simpler way with friendly UI showing
+  progress, eta, and compression rate.
 `
   )
+  .option('-i, --info', 'print media information')
   .option('-d, --dir <name>', 'output directory')
   .option('-s, --start-time <hh:mm:ss>', 'trim start time', parseTimeArg)
   .option('-e, --end-time <hh:mm:ss>', 'trim end time', parseTimeArg)
@@ -64,12 +65,12 @@ Examples:
 
   $ npx menc -d 123 *.mov
 
-  It will compress all mov files from the current directory and
+  It will compress all MOV files from the current directory and
   put them inside the "123" sub-directory.
 
   $ npx menc -f hd <filename>
 
-  It will convert the <filename> video to hd:720p format and
+  It will convert the <filename> video to HD:720p format and
   create a new <filename_hd>.mp4 file inside the current
   directory.
 
@@ -85,9 +86,13 @@ Examples:
 
   $ npx menc --custom '-vf scale=320:-2' <filename>
 
-  Scale the output video making width equal to 320, keeping
+  Scale the output video, making the width equal to 320, keeping
   the aspect ratio ("-2" ensures that the aspect ratio always
   conforms to the codec requirements).
+
+  $ npx menc -c '-b:a 64k' -f mp3 <filename>
+
+  Set bitrate for output MP3 file to 64k (smaller size).
 `
   )
 
