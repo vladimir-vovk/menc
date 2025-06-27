@@ -275,11 +275,12 @@ export const formatDuration = (inputDuration) => {
   const minutes = Math.floor((duration - hours * 60 * 60) / 60)
   const seconds = Math.floor(duration - hours * 60 * 60 - minutes * 60)
 
-  const strHours = hours ? `${hours}` : ''
-  const strMinutes = hours | minutes ? String(minutes).padStart(2, '0') : ''
+  const strHours = hours ? `${hours}:` : ''
+  const strMinutes =
+    hours | minutes ? `${String(minutes).padStart(2, '0')}:` : ''
   const strSeconds = String(seconds).padStart(2, '0')
 
-  return `${strHours}:${strMinutes}:${strSeconds}`
+  return `${strHours}${strMinutes}${strSeconds}`
 }
 
 export const formatFileSize = (inputSize) => {
@@ -311,7 +312,7 @@ export const logMediaInfo = (info) => {
       const displayAspectRatio = stream?.['display_aspect_ratio']
       const frameRate = stream?.['avg_frame_rate']
       console.log(
-        `   ${width}x${height}, ${displayAspectRatio}, frame rate: ${frameRate}`,
+        `   ${width}x${height}, ${displayAspectRatio ?? 'aspect ratio unavailable'}, frame rate: ${frameRate}`,
       )
     }
 
@@ -323,5 +324,14 @@ export const logMediaInfo = (info) => {
         `   channels: ${channels}, layout: ${channelLayout}, bit rate: ${bitRate}`,
       )
     }
+  }
+}
+
+export const tryCatchSync = (fn) => {
+  try {
+    const data = fn()
+    return { data }
+  } catch (error) {
+    return { error }
   }
 }

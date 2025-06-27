@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { tryCatchSync } from './utils.js'
 
 export class ProgressBar {
   constructor({ current, total, onComplete, stream, barSize, prefix } = {}) {
@@ -20,7 +21,10 @@ export class ProgressBar {
     }
   }
 
-  percent = () => Math.floor((this.current / this.total) * 100)
+  percent = () => {
+    const value = Math.floor((this.current / this.total) * 100)
+    return isNaN(value) ? '--' : value
+  }
 
   bar = () => {
     const _progress = Math.floor((this.current / this.total) * this.barSize)
@@ -29,17 +33,23 @@ export class ProgressBar {
     const leftColor = isDone ? chalk.green : chalk.green
     const rightColor = chalk.gray
 
-    const left =
-      progress > 0 || progress <= this.barSize
-        ? Array(progress).fill(leftColor('━'))
+    const { data: leftValue } = tryCatchSync(() => {
+      return progress > 0 || progress <= this.barSize
+        ? new Array(progress).fill(leftColor('━'))
         : []
+    })
+    const left = leftValue ?? []
 
     if (progress > 0 && progress < this.barSize) {
       left[left.length - 1] = leftColor('╸')
     }
-    const right = isDone
-      ? []
-      : Array(this.barSize - progress).fill(rightColor('━'))
+
+    const { data: rightValue } = tryCatchSync(() => {
+      return isDone
+        ? []
+        : new Array(this.barSize - progress).fill(rightColor('━'))
+    })
+    const right = rightValue ?? []
 
     const bar = `${left.join('')}${right.join('')}`
     const percent = chalk.yellow(`${String(this.percent()).padStart(3, ' ')}%`)
