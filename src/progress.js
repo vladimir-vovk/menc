@@ -2,7 +2,15 @@ import chalk from 'chalk'
 import { tryCatchSync } from './utils.js'
 
 export class ProgressBar {
-  constructor({ current, total, onComplete, stream, barSize, prefix } = {}) {
+  constructor({
+    current,
+    total,
+    onComplete,
+    stream,
+    barSize,
+    prefix,
+    outputName,
+  } = {}) {
     this.stream = stream ?? process.stdout
     this.barSize = barSize ?? 30
     this.current = current ?? 0
@@ -10,6 +18,7 @@ export class ProgressBar {
     this.onComplete = onComplete
     this.etaData = [] // the data to calculate eta { value, time }
     this.prefix = prefix ?? ''
+    this.outputName = outputName
     this.info = ''
     this.status = 'running' // success, fail
 
@@ -22,13 +31,13 @@ export class ProgressBar {
   }
 
   percent = () => {
-    const value = Math.floor((this.current / this.total) * 100)
-    return isNaN(value) ? '--' : value
+    const v = Math.floor((this.current / this.total) * 100)
+    return isNaN(v) || v === Infinity || v === -Infinity ? '--' : v
   }
 
   bar = () => {
-    const _progress = Math.floor((this.current / this.total) * this.barSize)
-    const progress = isNaN(_progress) || _progress < 0 ? 0 : _progress
+    const p = Math.floor((this.current / this.total) * this.barSize)
+    const progress = isNaN(p) || p === Infinity || p < 0 ? 0 : p
     const isDone = progress === this.barSize
     const leftColor = isDone ? chalk.green : chalk.green
     const rightColor = chalk.gray
@@ -194,6 +203,8 @@ export class ProgressBar {
 
     this.set(this.total)
     this.stop({ status: 'success' })
+
+    this.stream.write(`   → ${this.outputName}\n`)
 
     this.onComplete?.()
   }

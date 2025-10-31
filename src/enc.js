@@ -2,6 +2,7 @@ import { spawn } from 'child_process'
 import { parse } from 'ini'
 import {
   outFilename,
+  getFilename,
   shortenFilename,
   isDir,
   fileExists,
@@ -103,10 +104,11 @@ export const encode = async ({ filename, options, index, total }) => {
   let progress = 0 // current enc progress
 
   const inputName = shortenFilename(filename)
-  const outputName = shortenFilename(output)
+  const outputName = getFilename(output)
   const fileIndex = total > 1 ? `[${index}/${total}] ` : ''
   const bar = new ProgressBar({
-    prefix: `${fileIndex}${inputName} → ${outputName}`,
+    prefix: `${fileIndex}${inputName}`,
+    outputName,
   })
   bar.start()
 
@@ -165,7 +167,9 @@ export const encode = async ({ filename, options, index, total }) => {
         const inputSize = fileSize(filename)
         const outputSize = fileSize(output)
         const ratio = (inputSize / outputSize).toFixed(2)
-        bar.finish({ info: `(${inputSize}Mb / ${outputSize}Mb) ${ratio}:1` })
+        bar.finish({
+          info: `(${inputSize}Mb / ${outputSize}Mb) ${ratio}:1`,
+        })
       }
 
       resolve(code)

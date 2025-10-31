@@ -156,14 +156,18 @@ const outDir = (name) => {
   return `${dir}/`
 }
 
+export const getFilename = (fullName) => {
+  return fullName.split(path.sep).pop()
+}
+
 export const shortenFilename = (filename) => {
   const name = filename.split(path.sep).pop()
-  // 1234...5678.901
-  if (name.length <= 11) {
+  // 1234..5678.901
+  if (name.length <= 24) {
     return name
   }
 
-  return `${name.slice(0, 4)}..${name.slice(-8)}`
+  return `${name.slice(0, 14)}..${name.slice(-8)}`
 }
 
 export const outCustomName = (customArgs) => {
