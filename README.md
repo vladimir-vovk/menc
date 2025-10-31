@@ -92,7 +92,8 @@ Examples:
   the aspect ratio ("-2" ensures that the aspect ratio always
   conforms to the codec requirements).
 
-  $ npx menc -c '-b:a 64k' -f mp3 <filename>
+  $ npx menc -c '-qscale:a 6' -f mp3 <filename>
 
-  Set bitrate for output MP3 file to 64k (smaller size).
+  Set audio quality (variable bitrate) for the output MP3 file
+  to 6 (smaller size).
   ```
