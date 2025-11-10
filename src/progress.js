@@ -36,6 +36,15 @@ export class ProgressBar {
   }
 
   bar = () => {
+    const prefix = this.prefix ? ` ${this.prefix}` : ''
+    const spinner = this.getSpinner()
+
+    if (this.status === 'success') {
+      this.stream.clearLine()
+      this.stream.cursorTo(0)
+      return ` ${spinner}${prefix} → ${this.outputName} ${chalk.yellow(this.info)}`
+    }
+
     const p = Math.floor((this.current / this.total) * this.barSize)
     const progress = isNaN(p) || p === Infinity || p < 0 ? 0 : p
     const isDone = progress === this.barSize
@@ -63,14 +72,6 @@ export class ProgressBar {
     const bar = `${left.join('')}${right.join('')}`
     const percent = chalk.yellow(`${String(this.percent()).padStart(3, ' ')}%`)
     const eta = chalk.blue(`${this.formatEta()}`)
-    const prefix = this.prefix ? ` ${this.prefix}` : ''
-    const spinner = this.getSpinner()
-
-    if (this.status === 'success') {
-      this.stream.clearLine()
-      this.stream.cursorTo(0)
-      return ` ${spinner}${prefix} ${chalk.yellow(this.info)}`
-    }
 
     return ` ${spinner}${prefix} ${bar} ${percent} ${eta}`
   }
@@ -203,8 +204,6 @@ export class ProgressBar {
 
     this.set(this.total)
     this.stop({ status: 'success' })
-
-    this.stream.write(`   → ${this.outputName}\n`)
 
     this.onComplete?.()
   }

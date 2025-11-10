@@ -14,6 +14,7 @@ import {
   playSound,
   say,
   logMediaInfo,
+  getOuputName,
 } from './utils.js'
 import { ProgressBar } from './progress.js'
 
@@ -104,7 +105,7 @@ export const encode = async ({ filename, options, index, total }) => {
   let progress = 0 // current enc progress
 
   const inputName = shortenFilename(filename)
-  const outputName = getFilename(output)
+  const outputName = getOuputName(output, options)
   const fileIndex = total > 1 ? `[${index}/${total}] ` : ''
   const bar = new ProgressBar({
     prefix: `${fileIndex}${inputName}`,

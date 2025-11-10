@@ -160,6 +160,16 @@ export const getFilename = (fullName) => {
   return fullName.split(path.sep).pop()
 }
 
+export const getOuputName = (fullName, options) => {
+  const filename = getFilename(fullName)
+
+  if (options.dir) {
+    return path.join(options.dir, filename)
+  }
+
+  return filename
+}
+
 export const shortenFilename = (filename) => {
   const name = filename.split(path.sep).pop()
   // 1234..5678.901
